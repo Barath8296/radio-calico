@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Radio Calico</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main>
+    <h1>Radio Calico</h1>
+    <p>Prototype server is running.</p>
+    <ul id="messages"></ul>
+  </main>
+  <script>
+    fetch("/api/messages")
+      .then((r) => r.json())
+      .then((rows) => {
+        const list = document.getElementById("messages");
+        for (const row of rows) {
+          const li = document.createElement("li");
+          li.textContent = row.body;
+          list.appendChild(li);
+        }
+      });
+  </script>
+</body>
+</html>
