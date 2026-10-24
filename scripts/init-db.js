@@ -1,12 +1,11 @@
-import { readFile } from "node:fs/promises";
-import { pool } from "../db/index.js";
+import { readFileSync } from "node:fs";
+import { db } from "../db/index.js";
 
-const schema = await readFile(new URL("../db/schema.sql", import.meta.url), "utf8");
+const schema = readFileSync(new URL("../db/schema.sql", import.meta.url), "utf8");
 
 try {
-  await pool.query(schema);
-  const { rows } = await pool.query("SELECT current_database() AS db");
-  console.log(`Initialized database ${rows[0].db}`);
+  db.exec(schema);
+  console.log(`Initialized database at ${db.name}`);
 } finally {
-  await pool.end();
+  db.close();
 }

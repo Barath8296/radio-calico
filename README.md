@@ -1,28 +1,26 @@
 # Radio Calico
 
-Local prototype: Express web server + PostgreSQL database.
+Local prototype: Express web server + SQLite database.
 
 ## Setup
 
-Requires Node.js and a local PostgreSQL with a `radio_calico` database owned by
-a role matching your OS username.
+Requires Node.js.
 
 ```sh
 npm install
-npm run db:init   # create tables from db/schema.sql (wipes existing data)
+npm run db:init   # create data/radio_calico.db from db/schema.sql (wipes existing data)
 npm run dev       # start with auto-restart on file changes
 ```
 
 Open http://localhost:3000.
 
-By default the app connects over the Unix socket at `/var/run/postgresql`.
-Override with `DATABASE_URL` (e.g. `postgresql://user:pass@localhost/radio_calico`),
-or with `PGHOST` / `PGDATABASE`. Change the port with `PORT`.
+The database lives in `data/radio_calico.db` (git-ignored). Point it elsewhere
+with `DATABASE_PATH`. Change the port with `PORT`.
 
 ## Layout
 
 - `server.js`: Express app and routes
-- `db/index.js`: shared Postgres connection pool
+- `db/index.js`: shared SQLite connection (better-sqlite3)
 - `db/schema.sql`: table definitions and seed data
 - `scripts/init-db.js`: applies `db/schema.sql`
 - `static/`: HTML, CSS, JS, images (served at `/`)

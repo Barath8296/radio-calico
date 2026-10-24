@@ -1,12 +1,12 @@
-import pg from "pg";
+import { mkdirSync } from "node:fs";
+import { dirname } from "node:path";
+import Database from "better-sqlite3";
 
-// Defaults connect over the local Unix socket as the current OS user, which
-// matches the "barath" Postgres role. Set DATABASE_URL to override.
-export const pool = new pg.Pool(
-  process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL }
-    : {
-        host: process.env.PGHOST ?? "/var/run/postgresql",
-        database: process.env.PGDATABASE ?? "radio_calico",
-      },
-);
+// The database is a single file, created on first use. Set DATABASE_PATH to
+// point somewhere else.
+const path = process.env.DATABASE_PATH ?? "data/radio_calico.db";
+mkdirSync(dirname(path), { recursive: true });
+
+export const db = new Database(path);
+db.pragma("journal_mode = WAL");
+db.pragma("foreign_keys = ON");
