@@ -1,11 +1,13 @@
 -- Running `npm run db:init` wipes and recreates everything below.
 
 DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS users;
 
-CREATE TABLE messages (
+CREATE TABLE users (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    body       TEXT NOT NULL,
+    name       TEXT NOT NULL,
+    email      TEXT NOT NULL UNIQUE,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-INSERT INTO messages (body) VALUES ('Hello from Radio Calico!');
+INSERT INTO users (name, email) VALUES ('Calico Cat', 'calico@example.com');

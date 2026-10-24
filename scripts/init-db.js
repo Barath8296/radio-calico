@@ -1,3 +1,5 @@
+// Must be imported first so .env values are set before db/index.js reads them.
+import "dotenv/config";
 import { readFileSync } from "node:fs";
 import { db } from "../db/index.js";
 

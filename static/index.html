@@ -9,20 +9,67 @@
 <body>
   <main>
     <h1>Radio Calico</h1>
-    <p>Prototype server is running.</p>
-    <ul id="messages"></ul>
+
+    <section>
+      <h2>Add a user</h2>
+      <form id="user-form">
+        <label>Name <input name="name" required></label>
+        <label>Email <input name="email" type="email" required></label>
+        <button type="submit">Add user</button>
+      </form>
+      <p id="form-status" role="status"></p>
+    </section>
+
+    <section>
+      <h2>Users</h2>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Email</th><th>Created</th></tr>
+        </thead>
+        <tbody id="users"></tbody>
+      </table>
+    </section>
   </main>
   <script>
-    fetch("/api/messages")
-      .then((r) => r.json())
-      .then((rows) => {
-        const list = document.getElementById("messages");
-        for (const row of rows) {
-          const li = document.createElement("li");
-          li.textContent = row.body;
-          list.appendChild(li);
-        }
+    const form = document.getElementById("user-form");
+    const status = document.getElementById("form-status");
+    const tbody = document.getElementById("users");
+
+    async function loadUsers() {
+      const users = await fetch("/api/users").then((r) => r.json());
+      tbody.replaceChildren(
+        ...users.map((user) => {
+          const tr = document.createElement("tr");
+          for (const value of [user.id, user.name, user.email, user.created_at]) {
+            const td = document.createElement("td");
+            td.textContent = value;
+            tr.appendChild(td);
+          }
+          return tr;
+        }),
+      );
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
       });
+      const body = await res.json();
+      if (res.ok) {
+        status.textContent = `Added ${body.name}.`;
+        status.className = "ok";
+        form.reset();
+        loadUsers();
+      } else {
+        status.textContent = body.error;
+        status.className = "error";
+      }
+    });
+
+    loadUsers();
   </script>
 </body>
 </html>
