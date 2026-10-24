@@ -14,6 +14,8 @@ Current state: the Flask backend has not been built yet. The users API
 (`/api/users`) and SQLite access still live in the Express app (`server.js`,
 `db/`) until they are moved to Flask.
 
+Planned future architecture: Express serves the site; a Flask API with SQLite will come later.
+
 ## Development server (Express)
 
 - `npm start`: run the server
